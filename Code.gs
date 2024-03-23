@@ -2,7 +2,7 @@
 // to save a particular json file to a github repo hosting a 
 // github pages website.
 
-//  called with a timed trigger every day, 
+// domultiplepush() is called with a timed trigger every day, 
 // in case the data is updated.
 
 // dataarray - [fileidofsourcesheet, sheetname, htmltemplate, githubrepopath, githubtoken ]
@@ -16,7 +16,7 @@ const tempfolder = DriveApp.getFolderById(tempfolderid);
 
 
 function pushtogithub() {
-  var jsontextoutput = HtmlService.createTemplateFromFile(templateFilename).evaluate();
+  var jsontextoutput = '{test content inside brackets}';
 
   //delete previous copies of the file if any
   var files = tempfolder.getFilesByName("test.json");
@@ -24,7 +24,7 @@ function pushtogithub() {
     files.next().setTrashed(true);
   }
 
-  tempfolder.createFile("test.json", jsontextoutput, "application/json");
+  tempfolder.createFile("test.json", jsontextoutput, "text/plain");
   doUpload(jsontextoutput, "program/data/test.json", githubtoken );  
 }
 
@@ -59,8 +59,8 @@ function doUpload(file_git, expfilename, token) {
     'message': 'adding ' + expfilename,
     'content': Utilities.base64Encode(file_git),
     'committer': {
-      'name': 'pushToGithub',
-      'email': 'SriSathyaSaiVidyaVahini@users.noreply.github.com'
+      'name': 'uploadJSONtoGithub',
+      'email': uploaderemail
     }
   };
   
@@ -76,7 +76,7 @@ function doUpload(file_git, expfilename, token) {
     }
   };
   
-  var url = 'https://api.github.com/repos/SriSathyaSaiVidyaVahini/SSSVV-landing/contents/' + expfilename;
+  var url = 'https://api.github.com/repos/SSSMC-web/schedule.sssmc/contents/' + expfilename;
   var response = UrlFetchApp.fetch(url, options);
   
   var p_git = JSON.parse(response.getContentText());
