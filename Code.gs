@@ -1,41 +1,28 @@
+const githubtoken = 'github_pat_11therealtokeniHKs';
+const tempfolderid = '1pAVtherealtempfolderidw';
+const uploaderemail = 'therealusername@users.noreply.github.com';
+const apiurl = 'https://therealurl.com/?realq=true&limit=1000';
+
 // a wrapper for an automated github commit call using github REST API
 // to save a particular json file to a github repo hosting a 
 // github pages website.
 
-// domultiplepush() is called with a timed trigger every day, 
+// pushjsontogithub() is called with a timed trigger every day, 
 // in case the data is updated.
-
-// dataarray - [fileidofsourcesheet, sheetname, htmltemplate, githubrepopath, githubtoken ]
-
-// const dataarray = ['1VWojiUgFg5ucSPJBdtkUbVcZR7Ww0GR3QVEwSLdNsoQ', 
-//     'ValuableVolunteers','VV', 'SriSathyaSaiVidyaVahini/VV',githubtoken];
-//const fileidofsourcesheet = dataarray[0];
-
 
 const tempfolder = DriveApp.getFolderById(tempfolderid);
 
-
-function pushtogithub() {
-  var jsontextoutput = '{test content inside brackets}';
+function pushjsontogithub() {
+  var jsontextoutput = UrlFetchApp.fetch(apiurl).getContentText();
 
   //delete previous copies of the file if any
-  var files = tempfolder.getFilesByName("test.json");
+  var files = tempfolder.getFilesByName("audiocategories.json");
   while (files.hasNext()) {
     files.next().setTrashed(true);
   }
 
-  tempfolder.createFile("test.json", jsontextoutput, "text/plain");
-  doUpload(jsontextoutput, "program/data/test.json", githubtoken );  
-}
-
-// function getDataVV() {
-//   var sheet = SpreadsheetApp.openById(fileidofsourcesheetVV).getSheetByName('ValuableVolunteers');
-//   return sheet.getDataRange().getValues();
-// }
-
-function getData(fileidofsourcesheet,sheetname) {
-  var sheet = SpreadsheetApp.openById(fileidofsourcesheet).getSheetByName(sheetname);
-  return sheet.getDataRange().getValues();
+  tempfolder.createFile("audiocategories.json", jsontextoutput, "text/plain");
+  doUpload(jsontextoutput, "program/data/audiocategories.json", githubtoken );  
 }
 
 function getshavalue(shafilename){
@@ -56,7 +43,7 @@ function doUpload(file_git, expfilename, token) {
   
   var data_git = {
     'sha': shavalue,
-    'message': 'adding ' + expfilename,
+    'message': 'updating ' + expfilename,
     'content': Utilities.base64Encode(file_git),
     'committer': {
       'name': 'uploadJSONtoGithub',
